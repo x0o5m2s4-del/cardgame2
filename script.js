@@ -176,18 +176,17 @@ async function flipCard(card,emoji){
 
   // 이미 열린 카드면 무시
   if(
-    card.classList.contains(
-      "open"
-    )
+    card.style.color === "black"
   ){
     return;
   }
 
 
 
-  card.classList.add(
-    "open"
-  );
+  // 카드 열기
+  card.style.color = "black";
+
+  card.style.background = "white";
 
 
 
@@ -198,6 +197,7 @@ async function flipCard(card,emoji){
 
 
 
+  // 카드 2개 열렸을 때
   if(flippedCards.length === 2){
 
     const first =
@@ -210,7 +210,7 @@ async function flipCard(card,emoji){
 
 
 
-    // 같은 카드면 점수 증가
+    // 같은 카드면 점수 +1
     if(
       first.emoji ===
       second.emoji
@@ -226,15 +226,19 @@ async function flipCard(card,emoji){
 
 
 
-    // 틀려도 안 닫힘
+    // 틀려도 카드 유지
     flippedCards = [];
 
 
 
     // 카드 전부 열렸는지 검사
     const openedCards =
-      document.querySelectorAll(
-        ".card.open"
+      [...document.querySelectorAll(
+        ".card"
+      )].filter(card=>
+
+        card.style.color === "black"
+
       );
 
 
