@@ -41,9 +41,13 @@ input {
 
   border: 2px solid #ffd1e6;
 
+  font-size: 16px;
+
 }
 
 button {
+
+  margin-top: 10px;
 
   padding: 12px 20px;
 
