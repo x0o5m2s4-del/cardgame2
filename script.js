@@ -1,18 +1,3 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-
-import {
-
-  getFirestore,
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs
-
-} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
-
-
 const firebaseConfig = {
 
   apiKey: "AIzaSyD2ZvVaN_ZWrTKvQdWGpdLyt0jb1FHnVp4",
@@ -31,23 +16,27 @@ const firebaseConfig = {
 
 
 
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
+const db = firebase.firestore();
 
 
 
-const cards = [
+const symbols = [
 
-  "🌸","🌸",
+  "🍓","🍓",
   "🐰","🐰",
-  "🍓","🍓"
+  "🌸","🌸"
 
 ];
 
 
 
-let flippedCards = [];
+let cards = [];
+
+let flipped = [];
+
+let matched = 0;
 
 let score = 0;
 
@@ -86,37 +75,33 @@ async function startGame(){
     );
 
     return;
+
   }
 
 
 
   // 중복 참여 검사
-  const q = query(
+  const snapshot =
+    await db.collection("scores")
 
-    collection(db,"scores"),
-
-    where(
+    .where(
       "studentId",
       "==",
       studentId
     )
 
-  );
+    .get();
 
 
 
-  const querySnapshot =
-    await getDocs(q);
-
-
-
-  if(!querySnapshot.empty){
+  if(!snapshot.empty){
 
     alert(
       "이미 참여한 학생이야!"
     );
 
     return;
+
   }
 
 
@@ -127,23 +112,37 @@ async function startGame(){
 
 
 
-  const gameBoard =
+  document.getElementById(
+    "game-screen"
+  ).style.display = "block";
+
+
+
+  createBoard();
+
+}
+
+
+
+function createBoard(){
+
+  const board =
     document.getElementById(
       "game-board"
     );
 
 
 
-  gameBoard.innerHTML = "";
+  board.innerHTML = "";
 
 
 
-  const shuffled =
-    shuffle([...cards]);
+  cards =
+    shuffle([...symbols]);
 
 
 
-  shuffled.forEach((emoji)=>{
+  cards.forEach((symbol,index)=>{
 
     const card =
       document.createElement("div");
@@ -155,23 +154,21 @@ async function startGame(){
 
 
 
-    card.textContent =
-      emoji;
+    card.innerHTML = symbol;
 
 
 
-    // 처음엔 핑크 배경
-    card.style.background =
-      "#ffd6e7";
+    card.dataset.index =
+      index;
 
 
 
     card.onclick =
-      ()=>flipCard(card,emoji);
+      ()=>flipCard(card,symbol);
 
 
 
-    gameBoard.appendChild(card);
+    board.appendChild(card);
 
   });
 
@@ -179,79 +176,56 @@ async function startGame(){
 
 
 
-async function flipCard(card,emoji){
+async function flipCard(card,symbol){
 
-  // 이미 열린 카드면 무시
   if(
-    card.style.background ===
-    "white"
+    flipped.includes(card)
   ){
     return;
   }
 
 
 
-  // 카드 열기
-  card.style.background =
-    "white";
+  flipped.push(card);
 
 
 
-  flippedCards.push({
-    card,
-    emoji
-  });
-
-
-
-  // 카드 2개 열렸을 때
-  if(flippedCards.length === 2){
+  if(flipped.length === 2){
 
     const first =
-      flippedCards[0];
+      flipped[0];
 
 
 
     const second =
-      flippedCards[1];
+      flipped[1];
 
 
 
-    // 같은 카드면 점수 +1
     if(
-      first.emoji ===
-      second.emoji
+      first.innerHTML ===
+      second.innerHTML
     ){
+
+      matched++;
 
       score++;
 
+
+
       document.getElementById(
         "score"
-      ).textContent = score;
+      ).innerText = score;
 
     }
 
 
 
-    // 틀려도 카드 유지
-    flippedCards = [];
+    flipped = [];
 
 
 
-    // 카드 전부 열렸는지 검사
-    const openedCards =
-      [...document.querySelectorAll(
-        ".card"
-      )].filter(card=>
-
-        card.style.background ===
-        "white"
-
-      );
-
-
-
-    if(openedCards.length === 6){
+    if(matched === 3){
 
       const studentId =
         document.getElementById(
@@ -267,36 +241,26 @@ async function flipCard(card,emoji){
 
 
 
-      // Firebase 저장
-      await addDoc(
+      await db.collection("scores")
 
-        collection(db,"scores"),
+      .add({
 
-        {
+        studentId,
 
-          name:name,
+        name,
 
-          studentId:studentId,
+        score,
 
-          score:score,
+        time:new Date()
 
-          time:new Date()
-
-        }
-
-      );
+      });
 
 
 
       setTimeout(()=>{
 
         alert(
-
-          name +
-          "님의 최종 점수는 " +
-          score +
-          "점입니다!"
-
+          "게임 완료!"
         );
 
       },300);
@@ -306,7 +270,3 @@ async function flipCard(card,emoji){
   }
 
 }
-
-
-
-window.startGame = startGame;
