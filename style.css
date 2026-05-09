@@ -1,0 +1,109 @@
+body {
+
+  margin: 0;
+  padding: 20px;
+
+  font-family: sans-serif;
+
+  background: #fff5f8;
+
+  display: flex;
+  justify-content: center;
+
+}
+
+.container {
+
+  width: 100%;
+  max-width: 500px;
+
+  text-align: center;
+
+}
+
+h1 {
+
+  color: #ff6fa5;
+
+}
+
+#start-screen {
+
+  margin-bottom: 20px;
+
+}
+
+input {
+
+  padding: 10px;
+
+  margin: 5px;
+
+  border: 2px solid #ffc0d9;
+
+  border-radius: 10px;
+
+}
+
+button {
+
+  padding: 10px 20px;
+
+  border: none;
+
+  background: #ff8fbc;
+
+  color: white;
+
+  border-radius: 10px;
+
+  font-size: 16px;
+
+}
+
+#game-board {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,100px);
+
+  gap: 15px;
+
+  justify-content: center;
+
+  margin-top: 20px;
+
+}
+
+.card {
+
+  width: 100px;
+  height: 100px;
+
+  background: #ffd6e7;
+
+  border: 2px solid #ffc0d9;
+
+  border-radius: 15px;
+
+  font-size: 45px;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  color: transparent;
+
+}
+
+.card.open {
+
+  background: white;
+
+  color: black;
+
+}
