@@ -150,12 +150,19 @@ async function startGame(){
 
 
 
-    card.className = "card";
+    card.className =
+      "card";
 
 
 
     card.textContent =
       emoji;
+
+
+
+    // 처음엔 핑크 배경
+    card.style.background =
+      "#ffd6e7";
 
 
 
@@ -176,7 +183,8 @@ async function flipCard(card,emoji){
 
   // 이미 열린 카드면 무시
   if(
-    card.style.color === "black"
+    card.style.background ===
+    "white"
   ){
     return;
   }
@@ -184,9 +192,8 @@ async function flipCard(card,emoji){
 
 
   // 카드 열기
-  card.style.color = "black";
-
-  card.style.background = "white";
+  card.style.background =
+    "white";
 
 
 
@@ -237,7 +244,8 @@ async function flipCard(card,emoji){
         ".card"
       )].filter(card=>
 
-        card.style.color === "black"
+        card.style.background ===
+        "white"
 
       );
 
